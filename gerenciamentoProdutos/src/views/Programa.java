@@ -6,10 +6,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import Models.Produto;
-import services.GerenciadorProdutos;
 
 public class Programa {
-    private GerenciadorProdutos gerenciador;
+    private java.util.List<Produto> produtos;
     private JFrame frame;
     private JPanel panel;
     private JLabel label;
@@ -19,7 +18,7 @@ public class Programa {
     private JButton encerrarButton;
 
     public Programa() {
-        gerenciador = new GerenciadorProdutos();
+        produtos = new java.util.ArrayList<>();
         frame = new JFrame("Gerenciador de Produtos");
         panel = new JPanel();
         label = new JLabel("Selecione uma opção:");
@@ -92,7 +91,7 @@ public class Programa {
         double preco = Double.parseDouble(precoInput);
 
         Produto produto = new Produto(id, nome, preco);
-        gerenciador.adicionarProduto(produto);
+        produtos.add(produto);
         JOptionPane.showMessageDialog(frame, "Produto adicionado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
     }
 
@@ -100,7 +99,14 @@ public class Programa {
         String idInput = JOptionPane.showInputDialog(frame, "Digite o ID do produto a ser removido:", "Remover Produto", JOptionPane.QUESTION_MESSAGE);
         int id = Integer.parseInt(idInput);
 
-        boolean produtoRemovido = gerenciador.removerProduto(id);
+        boolean produtoRemovido = false;
+        for (Produto produto : produtos) {
+            if (produto.getId() == id) {
+                produtos.remove(produto);
+                produtoRemovido = true;
+                break;
+            }
+        }
 
         if (produtoRemovido) {
             JOptionPane.showMessageDialog(frame, "Produto removido com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
@@ -110,8 +116,24 @@ public class Programa {
     }
 
     private void listarProdutos() {
-        String listaProdutos = gerenciador.listarProdutos();
-        JOptionPane.showMessageDialog(frame, listaProdutos, "Lista de Produtos", JOptionPane.INFORMATION_MESSAGE);
+        if (produtos.isEmpty()) {
+            JOptionPane.showMessageDialog(frame, "Não há produtos cadastrados.", "Lista de Produtos", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            StringBuilder listaProdutos = new StringBuilder();
+            listaProdutos.append("Produtos cadastrados:\n");
+            for (Produto produto : produtos) {
+                listaProdutos.append("ID: ").append(produto.getId()).append(" | Nome: ").append(produto.getNome()).append(" | Preço: ").append(produto.getPreco()).append("\n");
+            }
+
+            JFrame listaFrame = new JFrame("Lista de Produtos");
+            JTextArea listaTextArea = new JTextArea(listaProdutos.toString());
+            listaTextArea.setEditable(false);
+
+            JScrollPane scrollPane = new JScrollPane(listaTextArea);
+            listaFrame.add(scrollPane);
+            listaFrame.setSize(300, 200);
+            listaFrame.setVisible(true);
+        }
     }
 
     private void encerrarPrograma() {
