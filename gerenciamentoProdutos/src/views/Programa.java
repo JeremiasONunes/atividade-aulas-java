@@ -4,11 +4,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import Models.Produto;
 
 public class Programa {
-    private java.util.List<Produto> produtos;
+    private List<Produto> produtos;
     private JFrame frame;
     private JPanel panel;
     private JLabel label;
@@ -16,9 +19,10 @@ public class Programa {
     private JButton removerButton;
     private JButton listarButton;
     private JButton encerrarButton;
+    private static final String ARQUIVO_CSV = "produtos.csv";
 
     public Programa() {
-        produtos = new java.util.ArrayList<>();
+        produtos = new ArrayList<>();
         frame = new JFrame("Gerenciador de Produtos");
         panel = new JPanel();
         label = new JLabel("Selecione uma opção:");
@@ -29,6 +33,7 @@ public class Programa {
     }
 
     public void executar() {
+        carregarDados();
         configurarInterface();
         adicionarListeners();
         exibirInterface();
@@ -82,7 +87,6 @@ public class Programa {
     }
 
     private void adicionarProduto() {
-        
         String nome = JOptionPane.showInputDialog(frame, "Digite o nome do produto:", "Adicionar Produto", JOptionPane.QUESTION_MESSAGE);
 
         String precoInput = JOptionPane.showInputDialog(frame, "Digite o preço do produto:", "Adicionar Produto", JOptionPane.QUESTION_MESSAGE);
@@ -91,6 +95,7 @@ public class Programa {
         Produto produto = new Produto(nome, preco);
         produtos.add(produto);
         JOptionPane.showMessageDialog(frame, "Produto adicionado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+        salvarDados();
     }
 
     private void removerProduto() {
@@ -108,6 +113,7 @@ public class Programa {
 
         if (produtoRemovido) {
             JOptionPane.showMessageDialog(frame, "Produto removido com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+            salvarDados();
         } else {
             JOptionPane.showMessageDialog(frame, "Produto não encontrado.", "Erro", JOptionPane.ERROR_MESSAGE);
         }
@@ -136,11 +142,37 @@ public class Programa {
 
     private void encerrarPrograma() {
         JOptionPane.showMessageDialog(frame, "Encerrando o programa. Até logo!", "Encerramento", JOptionPane.INFORMATION_MESSAGE);
+        salvarDados();
         System.exit(0);
     }
 
-    public static void main(String[] args) {
-        Programa programa = new Programa();
-        programa.executar();
+    private void salvarDados() {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(ARQUIVO_CSV))) {
+            for (Produto produto : produtos) {
+                writer.println(produto.getId() + "," + produto.getNome() + "," + produto.getPreco());
+            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(frame, "Erro ao salvar os dados.", "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void carregarDados() {
+        File arquivo = new File(ARQUIVO_CSV);
+        if (arquivo.exists()) {
+            try (BufferedReader reader = new BufferedReader(new FileReader(ARQUIVO_CSV))) {
+                String linha;
+                while ((linha = reader.readLine()) != null) {
+                    String[] dados = linha.split(",");
+                    int id = Integer.parseInt(dados[0]);
+                    String nome = dados[1];
+                    double preco = Double.parseDouble(dados[2]);
+                    Produto produto = new Produto(nome, preco);
+                    produto.setId(id);
+                    produtos.add(produto);
+                }
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(frame, "Erro ao carregar os dados.", "Erro", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }
 }

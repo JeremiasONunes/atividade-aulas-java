@@ -23,4 +23,12 @@ public class Produto {
     public double getPreco() {
         return preco;
     }
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	
+
+	
 }
