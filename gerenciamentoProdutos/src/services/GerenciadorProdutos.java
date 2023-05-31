@@ -30,7 +30,7 @@ public class GerenciadorProdutos {
 		return false;
     }
 
-    public void listarProdutos() {
+    public String listarProdutos() {
         if (produtos.isEmpty()) {
             System.out.println("Não há produtos cadastrados.");
         } else {
@@ -39,5 +39,6 @@ public class GerenciadorProdutos {
                 System.out.println("ID: " + produto.getId() + " | Nome: " + produto.getNome() + " | Preço: " + produto.getPreco());
             }
         }
+		return null;
     }
 }

@@ -7,4 +7,5 @@
  */
 module gerenciamentoProdutos {
 	requires java.management;
+	requires java.desktop;
 }
