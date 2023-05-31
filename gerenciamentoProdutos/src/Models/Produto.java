@@ -1,12 +1,13 @@
 package Models;
 
 public class Produto {
+    private static int contador = 1;
     private int id;
     private String nome;
     private double preco;
 
-    public Produto(int id, String nome, double preco) {
-        this.id = id;
+    public Produto(String nome, double preco) {
+        this.id = contador++;
         this.nome = nome;
         this.preco = preco;
     }

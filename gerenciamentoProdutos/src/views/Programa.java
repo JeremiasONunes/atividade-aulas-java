@@ -82,15 +82,13 @@ public class Programa {
     }
 
     private void adicionarProduto() {
-        String idInput = JOptionPane.showInputDialog(frame, "Digite o ID do produto:", "Adicionar Produto", JOptionPane.QUESTION_MESSAGE);
-        int id = Integer.parseInt(idInput);
-
+        
         String nome = JOptionPane.showInputDialog(frame, "Digite o nome do produto:", "Adicionar Produto", JOptionPane.QUESTION_MESSAGE);
 
         String precoInput = JOptionPane.showInputDialog(frame, "Digite o preço do produto:", "Adicionar Produto", JOptionPane.QUESTION_MESSAGE);
         double preco = Double.parseDouble(precoInput);
 
-        Produto produto = new Produto(id, nome, preco);
+        Produto produto = new Produto(nome, preco);
         produtos.add(produto);
         JOptionPane.showMessageDialog(frame, "Produto adicionado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
     }
